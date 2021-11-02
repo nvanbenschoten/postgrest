@@ -9,10 +9,10 @@ SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
-SET check_function_bodies = false;
+-- SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-CREATE SCHEMA public;
+-- CREATE SCHEMA public;
 CREATE SCHEMA postgrest;
 CREATE SCHEMA private;
 CREATE SCHEMA test;
@@ -28,19 +28,19 @@ COMMENT ON SCHEMA v2 IS 'v2 schema';
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
 --
 
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+-- CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 SET search_path = public, pg_catalog;
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 --
 -- Name: jwt_token; Type: TYPE; Schema: public; Owner: -
 --
 
-CREATE TYPE public.jwt_token AS (
-	token text
-);
+-- CREATE TYPE public.jwt_token AS (
+-- 	token text
+-- );
 
 
 SET search_path = test, pg_catalog;
@@ -61,52 +61,52 @@ SET search_path = postgrest, pg_catalog;
 -- Name: check_role_exists(); Type: FUNCTION; Schema: postgrest; Owner: -
 --
 
-CREATE FUNCTION check_role_exists() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-begin
-if not exists (select 1 from pg_roles as r where r.rolname = new.rolname) then
-   raise foreign_key_violation using message = 'Cannot create user with unknown role: ' || new.rolname;
-   return null;
- end if;
- return new;
-end
-$$;
+-- CREATE FUNCTION check_role_exists() RETURNS trigger
+--     LANGUAGE plpgsql
+--     AS $$
+-- begin
+-- if not exists (select 1 from pg_roles as r where r.rolname = new.rolname) then
+--    raise foreign_key_violation using message = 'Cannot create user with unknown role: ' || new.rolname;
+--    return null;
+--  end if;
+--  return new;
+-- end
+-- $$;
 
 
 --
 -- Name: set_authors_only_owner(); Type: FUNCTION; Schema: postgrest; Owner: -
 --
 
-CREATE FUNCTION set_authors_only_owner() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-begin
-  NEW.owner = current_setting('request.jwt.claim.id');
-  RETURN NEW;
-end
-$$;
+-- CREATE FUNCTION set_authors_only_owner() RETURNS trigger
+--     LANGUAGE plpgsql
+--     AS $$
+-- begin
+--   NEW.owner = current_setting('request.jwt.claim.id');
+--   RETURN NEW;
+-- end
+-- $$;
 
 
 --
 -- Name: update_owner(); Type: FUNCTION; Schema: postgrest; Owner: -
 --
 
-CREATE FUNCTION update_owner() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-   NEW.owner = current_user;
-   RETURN NEW;
-END;
-$$;
+-- CREATE FUNCTION update_owner() RETURNS trigger
+--     LANGUAGE plpgsql
+--     AS $$
+-- BEGIN
+--    NEW.owner = current_user;
+--    RETURN NEW;
+-- END;
+-- $$;
 
 
 SET search_path = test, pg_catalog;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+-- SET default_with_oids = false;
 
 CREATE TABLE items (
     id bigserial primary key
@@ -120,39 +120,39 @@ CREATE TABLE items3 (
     id bigserial primary key
 );
 
-CREATE FUNCTION search(id BIGINT) RETURNS SETOF items
-    LANGUAGE plpgsql
-    STABLE
-    AS $$BEGIN
-        RETURN QUERY SELECT items.id FROM items WHERE items.id=search.id;
-    END$$;
+-- CREATE FUNCTION search(id BIGINT) RETURNS SETOF items
+--     LANGUAGE plpgsql
+--     STABLE
+--     AS $$BEGIN
+--         RETURN QUERY SELECT items.id FROM items WHERE items.id=search.id;
+--     END$$;
 
-CREATE FUNCTION always_true(test.items) RETURNS boolean
-    LANGUAGE sql IMMUTABLE
-    AS $$ SELECT true $$;
+-- CREATE FUNCTION always_true(test.items) RETURNS boolean
+--     LANGUAGE sql IMMUTABLE
+--     AS $$ SELECT true $$;
 
-CREATE FUNCTION computed_overload(test.items) RETURNS boolean
-    LANGUAGE sql IMMUTABLE
-    AS $$ SELECT true $$;
+-- CREATE FUNCTION computed_overload(test.items) RETURNS boolean
+--     LANGUAGE sql IMMUTABLE
+--     AS $$ SELECT true $$;
 
-CREATE FUNCTION computed_overload(test.items2) RETURNS boolean
-    LANGUAGE sql IMMUTABLE
-    AS $$ SELECT true $$;
+-- CREATE FUNCTION computed_overload(test.items2) RETURNS boolean
+--     LANGUAGE sql IMMUTABLE
+--     AS $$ SELECT true $$;
 
-CREATE FUNCTION is_first(test.items) RETURNS boolean
-    LANGUAGE sql IMMUTABLE
-    AS $$ SELECT $1.id = 1 $$;
+-- CREATE FUNCTION is_first(test.items) RETURNS boolean
+--     LANGUAGE sql IMMUTABLE
+--     AS $$ SELECT $1.id = 1 $$;
 
 
-CREATE FUNCTION anti_id(test.items) RETURNS bigint
-    LANGUAGE sql IMMUTABLE
-    AS $_$ SELECT $1.id * -1 $_$;
+-- CREATE FUNCTION anti_id(test.items) RETURNS bigint
+--     LANGUAGE sql IMMUTABLE
+--     AS $_$ SELECT $1.id * -1 $_$;
 
 SET search_path = public, pg_catalog;
 
-CREATE FUNCTION always_false(test.items) RETURNS boolean
-    LANGUAGE sql IMMUTABLE
-    AS $$ SELECT false $$;
+-- CREATE FUNCTION always_false(test.items) RETURNS boolean
+--     LANGUAGE sql IMMUTABLE
+--     AS $$ SELECT false $$;
 
 create table public_consumers (
     id                  serial             not null unique,
@@ -177,241 +177,241 @@ CREATE TABLE موارد (
 SET search_path = test, pg_catalog;
 
 
-create view orders_view as
-  select * from public.public_orders;
+-- create view orders_view as
+--   select * from public.public_orders;
 
-create view consumers_view as
-  select * from public.public_consumers;
+-- create view consumers_view as
+--   select * from public.public_consumers;
 
-create view consumers_view_view as
-  select * from consumers_view;
+-- create view consumers_view_view as
+--   select * from consumers_view;
 
-create view public.consumers_extra as
-  select * from consumers_view;
+-- create view public.consumers_extra as
+--   select * from consumers_view;
 
-create view consumers_extra_view as
-  select * from public.consumers_extra;
+-- create view consumers_extra_view as
+--   select * from public.consumers_extra;
 
 --
 -- Name: getitemrange(bigint, bigint); Type: FUNCTION; Schema: test; Owner: -
 --
 
-CREATE FUNCTION getitemrange(min bigint, max bigint) RETURNS SETOF items
-    LANGUAGE sql
-    STABLE
-    AS $_$
-    SELECT * FROM test.items WHERE id > $1 AND id <= $2;
-$_$;
+-- CREATE FUNCTION getitemrange(min bigint, max bigint) RETURNS SETOF items
+--     LANGUAGE sql
+--     STABLE
+--     AS $_$
+--     SELECT * FROM test.items WHERE id > $1 AND id <= $2;
+-- $_$;
 
 --
 -- Name: version(); Type: FUNCTION; Schema: test; Owner: -
 --
 
-CREATE FUNCTION noparamsproc() RETURNS text
-	LANGUAGE sql
-        IMMUTABLE
-	AS $$
-		SELECT a FROM (VALUES ('Return value of no parameters procedure.')) s(a);
-	$$;
+-- CREATE FUNCTION noparamsproc() RETURNS text
+-- 	LANGUAGE sql
+--         IMMUTABLE
+-- 	AS $$
+-- 		SELECT a FROM (VALUES ('Return value of no parameters procedure.')) s(a);
+-- 	$$;
 
 --
 -- Name: login(text, text); Type: FUNCTION; Schema: test; Owner: -
 --
 
-CREATE FUNCTION login(id text, pass text) RETURNS public.jwt_token
-    LANGUAGE sql SECURITY DEFINER
-    STABLE
-    AS $$
-SELECT jwt.sign(
-    row_to_json(r), 'reallyreallyreallyreallyverysafe'
-  ) as token
-  FROM (
-    SELECT rolname::text, id::text
-      FROM postgrest.auth
-     WHERE id = id AND pass = pass
-  ) r;
-$$;
+-- CREATE FUNCTION login(id text, pass text) RETURNS public.jwt_token
+--     LANGUAGE sql SECURITY DEFINER
+--     STABLE
+--     AS $$
+-- SELECT jwt.sign(
+--     row_to_json(r), 'reallyreallyreallyreallyverysafe'
+--   ) as token
+--   FROM (
+--     SELECT rolname::text, id::text
+--       FROM postgrest.auth
+--      WHERE id = id AND pass = pass
+--   ) r;
+-- $$;
 
 
-CREATE FUNCTION varied_arguments(
-  double double precision,
-  "varchar" character varying,
-  "boolean" boolean,
-  date date,
-  money money,
-  enum enum_menagerie_type,
-  arr text[],
-  "integer" integer default 42,
-  json json default '{}',
-  jsonb jsonb default '{}'
-) RETURNS json
-LANGUAGE sql
-IMMUTABLE
-AS $_$
-  SELECT json_build_object(
-    'double', double,
-    'varchar', "varchar",
-    'boolean', "boolean",
-    'date', date,
-    'money', money,
-    'enum', enum,
-    'arr', arr,
-    'integer', "integer",
-    'json', json,
-    'jsonb', jsonb
-  );
-$_$;
+-- CREATE FUNCTION varied_arguments(
+--   double double precision,
+--   "varchar" character varying,
+--   "boolean" boolean,
+--   date date,
+--   money money,
+--   enum enum_menagerie_type,
+--   arr text[],
+--   "integer" integer default 42,
+--   json json default '{}',
+--   jsonb jsonb default '{}'
+-- ) RETURNS json
+-- LANGUAGE sql
+-- IMMUTABLE
+-- AS $_$
+--   SELECT json_build_object(
+--     'double', double,
+--     'varchar', "varchar",
+--     'boolean', "boolean",
+--     'date', date,
+--     'money', money,
+--     'enum', enum,
+--     'arr', arr,
+--     'integer', "integer",
+--     'json', json,
+--     'jsonb', jsonb
+--   );
+-- $_$;
 
-COMMENT ON FUNCTION varied_arguments(double precision, character varying, boolean, date, money, enum_menagerie_type, text[], integer, json, jsonb) IS
-$_$An RPC function
+-- COMMENT ON FUNCTION varied_arguments(double precision, character varying, boolean, date, money, enum_menagerie_type, text[], integer, json, jsonb) IS
+-- $_$An RPC function
 
-Just a test for RPC function arguments$_$;
+-- Just a test for RPC function arguments$_$;
 
 
-CREATE FUNCTION json_argument(arg json) RETURNS text
-LANGUAGE sql
-IMMUTABLE
-AS $_$
-  SELECT json_typeof(arg);
-$_$;
+-- CREATE FUNCTION json_argument(arg json) RETURNS text
+-- LANGUAGE sql
+-- IMMUTABLE
+-- AS $_$
+--   SELECT json_typeof(arg);
+-- $_$;
 
 --
 -- Name: jwt_test(); Type: FUNCTION; Schema: test; Owner: -
 --
 
-CREATE FUNCTION jwt_test() RETURNS public.jwt_token
-    LANGUAGE sql SECURITY DEFINER
-    IMMUTABLE
-    AS $$
-SELECT jwt.sign(
-    row_to_json(r), 'reallyreallyreallyreallyverysafe'
-  ) as token
-  FROM (
-    SELECT 'joe'::text as iss, 'fun'::text as sub, 'everyone'::text as aud,
-       1300819380 as exp, 1300819380 as nbf, 1300819380 as iat,
-       'foo'::text as jti, 'postgrest_test'::text as role,
-       true as "http://postgrest.com/foo"
-  ) r;
-$$;
+-- CREATE FUNCTION jwt_test() RETURNS public.jwt_token
+--     LANGUAGE sql SECURITY DEFINER
+--     IMMUTABLE
+--     AS $$
+-- SELECT jwt.sign(
+--     row_to_json(r), 'reallyreallyreallyreallyverysafe'
+--   ) as token
+--   FROM (
+--     SELECT 'joe'::text as iss, 'fun'::text as sub, 'everyone'::text as aud,
+--        1300819380 as exp, 1300819380 as nbf, 1300819380 as iat,
+--        'foo'::text as jti, 'postgrest_test'::text as role,
+--        true as "http://postgrest.com/foo"
+--   ) r;
+-- $$;
 
 
-CREATE OR REPLACE FUNCTION switch_role() RETURNS void
-  LANGUAGE plpgsql
-  AS $$
-declare
-  user_id text;
-Begin
-  user_id = current_setting('request.jwt.claim.id')::text;
-  if user_id = '1'::text then
-    execute 'set local role postgrest_test_author';
-  elseif user_id = '2'::text then
-    execute 'set local role postgrest_test_default_role';
-  elseif user_id = '3'::text then
-    RAISE EXCEPTION 'Disabled ID --> %', user_id USING HINT = 'Please contact administrator';
-  /* else */
-  /*   execute 'set local role postgrest_test_anonymous'; */
-  end if;
-end
-$$;
+-- CREATE OR REPLACE FUNCTION switch_role() RETURNS void
+--   LANGUAGE plpgsql
+--   AS $$
+-- declare
+--   user_id text;
+-- Begin
+--   user_id = current_setting('request.jwt.claim.id')::text;
+--   if user_id = '1'::text then
+--     execute 'set local role postgrest_test_author';
+--   elseif user_id = '2'::text then
+--     execute 'set local role postgrest_test_default_role';
+--   elseif user_id = '3'::text then
+--     RAISE EXCEPTION 'Disabled ID --> %', user_id USING HINT = 'Please contact administrator';
+--   /* else */
+--   /*   execute 'set local role postgrest_test_anonymous'; */
+--   end if;
+-- end
+-- $$;
 
-CREATE FUNCTION get_current_user() RETURNS text
-  LANGUAGE sql
-  STABLE
-  AS $$
-SELECT current_user::text;
-$$;
+-- CREATE FUNCTION get_current_user() RETURNS text
+--   LANGUAGE sql
+--   STABLE
+--   AS $$
+-- SELECT current_user::text;
+-- $$;
 
---
--- Name: reveal_big_jwt(); Type: FUNCTION; Schema: test; Owner: -
---
+-- --
+-- -- Name: reveal_big_jwt(); Type: FUNCTION; Schema: test; Owner: -
+-- --
 
-CREATE FUNCTION reveal_big_jwt() RETURNS TABLE (
-      iss text, sub text, exp bigint,
-      nbf bigint, iat bigint, jti text, "http://postgrest.com/foo" boolean
-    )
-    LANGUAGE sql SECURITY DEFINER
-    STABLE
-    AS $$
-SELECT current_setting('request.jwt.claim.iss') as iss,
-       current_setting('request.jwt.claim.sub') as sub,
-       current_setting('request.jwt.claim.exp')::bigint as exp,
-       current_setting('request.jwt.claim.nbf')::bigint as nbf,
-       current_setting('request.jwt.claim.iat')::bigint as iat,
-       current_setting('request.jwt.claim.jti') as jti,
-       -- role is not included in the claims list
-       current_setting('request.jwt.claim.http://postgrest.com/foo')::boolean
-         as "http://postgrest.com/foo";
-$$;
-
-
---
--- Name: problem(); Type: FUNCTION; Schema: test; Owner: -
---
-
-CREATE FUNCTION problem() RETURNS void
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-      RAISE 'bad thing';
-END;
-$$;
+-- CREATE FUNCTION reveal_big_jwt() RETURNS TABLE (
+--       iss text, sub text, exp bigint,
+--       nbf bigint, iat bigint, jti text, "http://postgrest.com/foo" boolean
+--     )
+--     LANGUAGE sql SECURITY DEFINER
+--     STABLE
+--     AS $$
+-- SELECT current_setting('request.jwt.claim.iss') as iss,
+--        current_setting('request.jwt.claim.sub') as sub,
+--        current_setting('request.jwt.claim.exp')::bigint as exp,
+--        current_setting('request.jwt.claim.nbf')::bigint as nbf,
+--        current_setting('request.jwt.claim.iat')::bigint as iat,
+--        current_setting('request.jwt.claim.jti') as jti,
+--        -- role is not included in the claims list
+--        current_setting('request.jwt.claim.http://postgrest.com/foo')::boolean
+--          as "http://postgrest.com/foo";
+-- $$;
 
 
---
--- Name: sayhello(text); Type: FUNCTION; Schema: test; Owner: -
---
+-- --
+-- -- Name: problem(); Type: FUNCTION; Schema: test; Owner: -
+-- --
 
-CREATE FUNCTION sayhello(name text) RETURNS text
-    LANGUAGE sql
-    IMMUTABLE
-    AS $_$
-    SELECT 'Hello, ' || $1;
-$_$;
+-- CREATE FUNCTION problem() RETURNS void
+--     LANGUAGE plpgsql
+--     AS $$
+-- BEGIN
+--       RAISE 'bad thing';
+-- END;
+-- $$;
 
 
---
--- Name: callcounter(); Type: FUNCTION; Schema: test; Owner: -
---
+-- --
+-- -- Name: sayhello(text); Type: FUNCTION; Schema: test; Owner: -
+-- --
 
-CREATE SEQUENCE callcounter_count START 1;
+-- CREATE FUNCTION sayhello(name text) RETURNS text
+--     LANGUAGE sql
+--     IMMUTABLE
+--     AS $_$
+--     SELECT 'Hello, ' || $1;
+-- $_$;
 
-CREATE FUNCTION callcounter() RETURNS bigint
-    LANGUAGE sql
-    AS $_$
-    SELECT nextval('test.callcounter_count');
-$_$;
 
-CREATE FUNCTION reset_sequence(name TEXT, value INTEGER) RETURNS void
-SECURITY DEFINER
-LANGUAGE plpgsql AS $_$
-BEGIN
-  EXECUTE FORMAT($exec$
-    ALTER SEQUENCE %s RESTART WITH %s
-  $exec$, name, value);
-END
-$_$;
+-- --
+-- -- Name: callcounter(); Type: FUNCTION; Schema: test; Owner: -
+-- --
 
---
--- Name: singlejsonparam(json); Type: FUNCTION; Schema: test; Owner: -
---
+-- CREATE SEQUENCE callcounter_count START 1;
 
-CREATE FUNCTION singlejsonparam(single_param json) RETURNS json
-    LANGUAGE sql
-    IMMUTABLE
-    AS $_$
-    SELECT single_param;
-$_$;
+-- CREATE FUNCTION callcounter() RETURNS bigint
+--     LANGUAGE sql
+--     AS $_$
+--     SELECT nextval('test.callcounter_count');
+-- $_$;
 
---
--- Name: test_empty_rowset(); Type: FUNCTION; Schema: test; Owner: -
---
+-- CREATE FUNCTION reset_sequence(name TEXT, value INTEGER) RETURNS void
+-- SECURITY DEFINER
+-- LANGUAGE plpgsql AS $_$
+-- BEGIN
+--   EXECUTE FORMAT($exec$
+--     ALTER SEQUENCE %s RESTART WITH %s
+--   $exec$, name, value);
+-- END
+-- $_$;
 
-CREATE FUNCTION test_empty_rowset() RETURNS SETOF integer
-    LANGUAGE sql
-    IMMUTABLE
-    AS $$
-    SELECT null::int FROM (SELECT 1) a WHERE false;
-$$;
+-- --
+-- -- Name: singlejsonparam(json); Type: FUNCTION; Schema: test; Owner: -
+-- --
+
+-- CREATE FUNCTION singlejsonparam(single_param json) RETURNS json
+--     LANGUAGE sql
+--     IMMUTABLE
+--     AS $_$
+--     SELECT single_param;
+-- $_$;
+
+-- --
+-- -- Name: test_empty_rowset(); Type: FUNCTION; Schema: test; Owner: -
+-- --
+
+-- CREATE FUNCTION test_empty_rowset() RETURNS SETOF integer
+--     LANGUAGE sql
+--     IMMUTABLE
+--     AS $$
+--     SELECT null::int FROM (SELECT 1) a WHERE false;
+-- $$;
 
 
 SET search_path = postgrest, pg_catalog;
@@ -506,8 +506,8 @@ CREATE TABLE compound_pk (
 );
 
 
-CREATE VIEW compound_pk_view AS
-SELECT * FROM compound_pk;
+-- CREATE VIEW compound_pk_view AS
+-- SELECT * FROM compound_pk;
 
 --
 -- Name: empty_table; Type: TABLE; Schema: test; Owner: -
@@ -591,9 +591,9 @@ CREATE TABLE json_table (
 -- Name: materialized_view; Type: MATERIALIZED VIEW; Schema: test; Owner: -
 --
 
-CREATE MATERIALIZED VIEW materialized_view AS
- SELECT version() AS version
-  WITH NO DATA;
+-- CREATE MATERIALIZED VIEW materialized_view AS
+--  SELECT version() AS version
+--   WITH NO DATA;
 
 
 --
@@ -606,7 +606,7 @@ CREATE TABLE menagerie (
     "varchar" character varying NOT NULL,
     "boolean" boolean NOT NULL,
     date date NOT NULL,
-    money money NOT NULL,
+    -- money money NOT NULL,
     enum enum_menagerie_type NOT NULL
 );
 
@@ -651,7 +651,7 @@ CREATE TABLE projects (
     name text NOT NULL,
     client_id integer REFERENCES clients(id)
 );
-alter table projects rename constraint projects_client_id_fkey to client;
+alter table projects rename constraint fk_client_id_ref_clients to client;
 
 --
 -- Name: projects_view; Type: VIEW; Schema: test; Owner: -
@@ -686,11 +686,11 @@ SELECT c.id, s.id as sponsor_id
 FROM competitors c
     LEFT JOIN sponsors s on c.sponsor_id = s.id;
 
-CREATE RULE test_null_pk_competitors_sponsors  AS
-    ON INSERT TO test_null_pk_competitors_sponsors DO INSTEAD
-    INSERT INTO competitors(id, full_name, sponsor_id)
-    VALUES (new.id, 'Competitor without sponsor', new.sponsor_id)
-    RETURNING id, sponsor_id;
+-- CREATE RULE test_null_pk_competitors_sponsors  AS
+--     ON INSERT TO test_null_pk_competitors_sponsors DO INSTEAD
+--     INSERT INTO competitors(id, full_name, sponsor_id)
+--     VALUES (new.id, 'Competitor without sponsor', new.sponsor_id)
+--     RETURNING id, sponsor_id;
 
 --
 -- Name: simple_pk; Type: TABLE; Schema: test; Owner: -
@@ -724,7 +724,7 @@ CREATE TABLE tasks (
     name text NOT NULL,
     project_id integer REFERENCES projects(id)
 );
-alter table tasks rename constraint tasks_project_id_fkey to project;
+alter table tasks rename constraint fk_project_id_ref_projects to project;
 
 CREATE OR REPLACE VIEW filtered_tasks AS
 SELECT id AS "myId", name, project_id AS "projectID"
@@ -810,9 +810,9 @@ CREATE VIEW articles AS
 -- Name: tsearch; Type: TABLE; Schema: test; Owner: -
 --
 
-CREATE TABLE tsearch (
-    text_search_vector tsvector
-);
+-- CREATE TABLE tsearch (
+--     text_search_vector tsvector
+-- );
 
 CREATE TABLE "Escap3e;" (
 		"so6meIdColumn" integer primary key
@@ -900,7 +900,7 @@ SET search_path = postgrest, pg_catalog;
 -- Name: ensure_auth_role_exists; Type: TRIGGER; Schema: postgrest; Owner: -
 --
 
-CREATE CONSTRAINT TRIGGER ensure_auth_role_exists AFTER INSERT OR UPDATE ON auth NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE PROCEDURE check_role_exists();
+-- CREATE CONSTRAINT TRIGGER ensure_auth_role_exists AFTER INSERT OR UPDATE ON auth NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE PROCEDURE check_role_exists();
 
 
 SET search_path = private, pg_catalog;
@@ -909,7 +909,7 @@ SET search_path = private, pg_catalog;
 -- Name: articles_owner_track; Type: TRIGGER; Schema: private; Owner: -
 --
 
-CREATE TRIGGER articles_owner_track BEFORE INSERT OR UPDATE ON articles FOR EACH ROW EXECUTE PROCEDURE postgrest.update_owner();
+-- CREATE TRIGGER articles_owner_track BEFORE INSERT OR UPDATE ON articles FOR EACH ROW EXECUTE PROCEDURE postgrest.update_owner();
 
 
 SET search_path = test, pg_catalog;
@@ -918,7 +918,7 @@ SET search_path = test, pg_catalog;
 -- Name: secrets_owner_track; Type: TRIGGER; Schema: test; Owner: -
 --
 
-CREATE TRIGGER secrets_owner_track BEFORE INSERT OR UPDATE ON authors_only FOR EACH ROW EXECUTE PROCEDURE postgrest.set_authors_only_owner();
+-- CREATE TRIGGER secrets_owner_track BEFORE INSERT OR UPDATE ON authors_only FOR EACH ROW EXECUTE PROCEDURE postgrest.set_authors_only_owner();
 
 SET search_path = test, pg_catalog;
 
@@ -948,52 +948,52 @@ create table orders (
 	billing_address_id   int references addresses(id),
 	shipping_address_id  int references addresses(id)
 );
-alter table orders rename constraint orders_billing_address_id_fkey to billing;
-alter table orders rename constraint orders_shipping_address_id_fkey to shipping;
+alter table orders rename constraint fk_billing_address_id_ref_addresses to billing;
+alter table orders rename constraint fk_shipping_address_id_ref_addresses to shipping;
 
-CREATE FUNCTION getproject(id int) RETURNS SETOF projects
-    LANGUAGE sql
-    AS $_$
-    SELECT * FROM test.projects WHERE id = $1;
-$_$;
+-- CREATE FUNCTION getproject(id int) RETURNS SETOF projects
+--     LANGUAGE sql
+--     AS $_$
+--     SELECT * FROM test.projects WHERE id = $1;
+-- $_$;
 
-CREATE FUNCTION get_projects_below(id int) RETURNS SETOF projects
-    LANGUAGE sql
-    AS $_$
-    SELECT * FROM test.projects WHERE id < $1;
-$_$;
+-- CREATE FUNCTION get_projects_below(id int) RETURNS SETOF projects
+--     LANGUAGE sql
+--     AS $_$
+--     SELECT * FROM test.projects WHERE id < $1;
+-- $_$;
 
-CREATE FUNCTION get_projects_above(id int) RETURNS SETOF projects
-    LANGUAGE sql
-    AS $_$
-    SELECT * FROM test.projects WHERE id > $1;
-$_$ ROWS 1;
+-- CREATE FUNCTION get_projects_above(id int) RETURNS SETOF projects
+--     LANGUAGE sql
+--     AS $_$
+--     SELECT * FROM test.projects WHERE id > $1;
+-- $_$ ROWS 1;
 
-CREATE FUNCTION getallprojects() RETURNS SETOF projects
-    LANGUAGE sql
-    AS $_$
-    SELECT * FROM test.projects;
-$_$ ROWS 2019;
+-- CREATE FUNCTION getallprojects() RETURNS SETOF projects
+--     LANGUAGE sql
+--     AS $_$
+--     SELECT * FROM test.projects;
+-- $_$ ROWS 2019;
 
-CREATE FUNCTION setprojects(id_l int, id_h int, name text) RETURNS SETOF projects
-    LANGUAGE sql
-    AS $_$
-    update test.projects set name = $3 WHERE id >= $1 AND id <= $2 returning *;
-$_$;
+-- CREATE FUNCTION setprojects(id_l int, id_h int, name text) RETURNS SETOF projects
+--     LANGUAGE sql
+--     AS $_$
+--     update test.projects set name = $3 WHERE id >= $1 AND id <= $2 returning *;
+-- $_$;
 
--- domains on tables are only supported from pg 11 on
-DO $do$BEGIN
-  IF (SELECT current_setting('server_version_num')::INT >= 110000) THEN
-      CREATE DOMAIN projects_domain AS projects;
+-- -- domains on tables are only supported from pg 11 on
+-- DO $do$BEGIN
+--   IF (SELECT current_setting('server_version_num')::INT >= 110000) THEN
+--       CREATE DOMAIN projects_domain AS projects;
 
-      CREATE FUNCTION getproject_domain(id int) RETURNS SETOF projects_domain
-          LANGUAGE sql
-          STABLE
-          AS $_$
-          SELECT projects::projects_domain FROM test.projects WHERE id = $1;
-    $_$;
-  END IF;
-END$do$;
+--       CREATE FUNCTION getproject_domain(id int) RETURNS SETOF projects_domain
+--           LANGUAGE sql
+--           STABLE
+--           AS $_$
+--           SELECT projects::projects_domain FROM test.projects WHERE id = $1;
+--     $_$;
+--   END IF;
+-- END$do$;
 
 create table images (
 	name text  not null,
@@ -1005,93 +1005,93 @@ create view images_base64 as (
   select name, replace(encode(img, 'base64'), E'\n', '') as img from images
 );
 
-create function test.ret_enum(val text) returns test.enum_menagerie_type as $$
-  select val::test.enum_menagerie_type;
-$$ language sql;
+-- create function test.ret_enum(val text) returns test.enum_menagerie_type as $$
+--   select val::test.enum_menagerie_type;
+-- $$ language sql;
 
-create domain one_nine as integer check (value >= 1 and value <= 9);
+-- create domain one_nine as integer check (value >= 1 and value <= 9);
 
-create function test.ret_array() returns integer[] as $$
-  select '{1,2,3}'::integer[];
-$$ language sql;
+-- create function test.ret_array() returns integer[] as $$
+--   select '{1,2,3}'::integer[];
+-- $$ language sql;
 
-create function test.ret_domain(val integer) returns test.one_nine as $$
-  select val::test.one_nine;
-$$ language sql;
+-- create function test.ret_domain(val integer) returns test.one_nine as $$
+--   select val::test.one_nine;
+-- $$ language sql;
 
-create function test.ret_range(low integer, up integer) returns int4range as $$
-  select int4range(low, up);
-$$ language sql;
+-- create function test.ret_range(low integer, up integer) returns int4range as $$
+--   select int4range(low, up);
+-- $$ language sql;
 
-create function test.ret_setof_integers() returns setof integer as $$
-  values (1), (2), (3);
-$$ language sql;
+-- create function test.ret_setof_integers() returns setof integer as $$
+--   values (1), (2), (3);
+-- $$ language sql;
 
--- this function does not have named arguments and should be ignored
--- if it's not ignored, it will break the test for the function before
-create function test.ret_setof_integers(int, int) returns integer AS $$
-  values (1);
-$$ language sql;
+-- -- this function does not have named arguments and should be ignored
+-- -- if it's not ignored, it will break the test for the function before
+-- create function test.ret_setof_integers(int, int) returns integer AS $$
+--   values (1);
+-- $$ language sql;
 
-create function test.ret_scalars() returns table(
-  a text, b test.enum_menagerie_type, c test.one_nine, d int4range
-) as $$
-  select row('scalars'::text, enum_first(null::test.enum_menagerie_type),
-              1::test.one_nine, int4range(10, 20));
-$$ language sql;
+-- create function test.ret_scalars() returns table(
+--   a text, b test.enum_menagerie_type, c test.one_nine, d int4range
+-- ) as $$
+--   select row('scalars'::text, enum_first(null::test.enum_menagerie_type),
+--               1::test.one_nine, int4range(10, 20));
+-- $$ language sql;
 
-create type test.point_2d as (x integer, y integer);
+-- create type test.point_2d as (x integer, y integer);
 
-create function test.ret_point_2d() returns test.point_2d as $$
-  select row(10, 5)::test.point_2d;
-$$ language sql;
+-- create function test.ret_point_2d() returns test.point_2d as $$
+--   select row(10, 5)::test.point_2d;
+-- $$ language sql;
 
-create function test.ret_point_overloaded(x int, y int) returns test.point_2d as $$
-  select row(x, y)::test.point_2d;
-$$ language sql;
+-- create function test.ret_point_overloaded(x int, y int) returns test.point_2d as $$
+--   select row(x, y)::test.point_2d;
+-- $$ language sql;
 
-create function test.ret_point_overloaded(x json) returns json as $$
-  select $1;
-$$ language sql;
+-- create function test.ret_point_overloaded(x json) returns json as $$
+--   select $1;
+-- $$ language sql;
 
--- domains on composite types are only supported from pg 11 on
-do $do$begin
-  if (SELECT current_setting('server_version_num')::int >= 110000) then
-    create domain test.composite_domain as test.point_2d;
+-- -- domains on composite types are only supported from pg 11 on
+-- do $do$begin
+--   if (SELECT current_setting('server_version_num')::int >= 110000) then
+--     create domain test.composite_domain as test.point_2d;
 
-    create function test.ret_composite_domain() returns test.composite_domain as $$
-      select row(10, 5)::test.composite_domain;
-    $$ language sql;
-  end if;
-end$do$;
+--     create function test.ret_composite_domain() returns test.composite_domain as $$
+--       select row(10, 5)::test.composite_domain;
+--     $$ language sql;
+--   end if;
+-- end$do$;
 
-create type private.point_3d as (x integer, y integer, z integer);
+-- create type private.point_3d as (x integer, y integer, z integer);
 
-create function test.ret_point_3d() returns private.point_3d as $$
-  select row(7, -3, 4)::private.point_3d;
-$$ language sql;
+-- create function test.ret_point_3d() returns private.point_3d as $$
+--   select row(7, -3, 4)::private.point_3d;
+-- $$ language sql;
 
-create function test.ret_void() returns void as '' language sql;
+-- create function test.ret_void() returns void as '' language sql;
 
-create or replace function test.ret_null() returns int as $$
-  select null::int;
-$$ language sql;
+-- create or replace function test.ret_null() returns int as $$
+--   select null::int;
+-- $$ language sql;
 
-create function test.ret_base64_bin() returns text as $$
-  select i.img from test.images_base64 i where i.name = 'A.png';
-$$ language sql;
+-- create function test.ret_base64_bin() returns text as $$
+--   select i.img from test.images_base64 i where i.name = 'A.png';
+-- $$ language sql;
 
-create function test.ret_rows_with_base64_bin() returns setof test.images_base64 as $$
-  select i.name, i.img from test.images_base64 i;
-$$ language sql;
+-- create function test.ret_rows_with_base64_bin() returns setof test.images_base64 as $$
+--   select i.name, i.img from test.images_base64 i;
+-- $$ language sql;
 
-create function test.single_article(id integer) returns test.articles as $$
-  select a.* from test.articles a where a.id = $1;
-$$ language sql;
+-- create function test.single_article(id integer) returns test.articles as $$
+--   select a.* from test.articles a where a.id = $1;
+-- $$ language sql;
 
-create function test.get_guc_value(name text) returns text as $$
-  select nullif(current_setting(name), '')::text;
-$$ language sql;
+-- create function test.get_guc_value(name text) returns text as $$
+--   select nullif(current_setting(name), '')::text;
+-- $$ language sql;
 
 create table w_or_wo_comma_names ( name text );
 
@@ -1111,8 +1111,7 @@ create table items_with_different_col_types (
 create table entities (
   id integer primary key,
   name text,
-  arr integer[],
-  text_search_vector tsvector
+  arr integer[]
 );
 
 create table child_entities (
@@ -1132,10 +1131,10 @@ create table grandchild_entities (
 
 -- Table used for testing range operators
 
-create table ranges (
-    id integer primary key,
-    range numrange
-);
+-- create table ranges (
+--     id integer primary key,
+--     range numrange
+-- );
 
 
 -- OpenAPI description tests
@@ -1151,19 +1150,19 @@ grandchild_entities description
 that spans
 multiple lines$$;
 
--- Used for testing that having the same return column name as the proc name
--- doesn't conflict with the required output, details in #901
-create function test.test() returns table(test text, value int) as $$
-  values ('hello', 1);
-$$ language sql;
+-- -- Used for testing that having the same return column name as the proc name
+-- -- doesn't conflict with the required output, details in #901
+-- create function test.test() returns table(test text, value int) as $$
+--   values ('hello', 1);
+-- $$ language sql;
 
-create function test.privileged_hello(name text) returns text as $$
-  select 'Privileged hello to ' || $1;
-$$ language sql;
+-- create function test.privileged_hello(name text) returns text as $$
+--   select 'Privileged hello to ' || $1;
+-- $$ language sql;
 
-create function test.get_tsearch() returns setof test.tsearch AS $$
-  SELECT * FROM test.tsearch;
-$$ language sql;
+-- create function test.get_tsearch() returns setof test.tsearch AS $$
+--   SELECT * FROM test.tsearch;
+-- $$ language sql;
 
 create table test.being (
   being int primary key not null
@@ -1183,163 +1182,163 @@ create table test.being_part (
   part int not null references test.part(part)
 );
 
-create function test.single_out_param(num int, OUT num_plus_one int) AS $$
-  select num + 1;
-$$ language sql;
+-- create function test.single_out_param(num int, OUT num_plus_one int) AS $$
+--   select num + 1;
+-- $$ language sql;
 
-create function test.single_json_out_param(a int, b text, OUT my_json json) AS $$
-  select json_build_object('a', a, 'b', b);
-$$ language sql;
+-- create function test.single_json_out_param(a int, b text, OUT my_json json) AS $$
+--   select json_build_object('a', a, 'b', b);
+-- $$ language sql;
 
-create function test.many_out_params(OUT my_json json, OUT num int, OUT str text) AS $$
-  select '{"a": 1, "b": "two"}'::json, 3, 'four'::text;
-$$ language sql;
+-- create function test.many_out_params(OUT my_json json, OUT num int, OUT str text) AS $$
+--   select '{"a": 1, "b": "two"}'::json, 3, 'four'::text;
+-- $$ language sql;
 
-create function test.single_inout_param(INOUT num int) AS $$
-  select num + 1;
-$$ language sql;
+-- create function test.single_inout_param(INOUT num int) AS $$
+--   select num + 1;
+-- $$ language sql;
 
-create function test.many_inout_params(INOUT num int, INOUT str text, INOUT b bool DEFAULT true) AS $$
-  select num, str, b;
-$$ language sql;
+-- create function test.many_inout_params(INOUT num int, INOUT str text, INOUT b bool DEFAULT true) AS $$
+--   select num, str, b;
+-- $$ language sql;
 
-create function test.single_column_table_return () returns table (a text) AS $$
-  select 'A'::text;
-$$ language sql;
+-- create function test.single_column_table_return () returns table (a text) AS $$
+--   select 'A'::text;
+-- $$ language sql;
 
-create function test.multi_column_table_return () returns table (a text, b text) AS $$
-  select 'A'::text, 'B'::text;
-$$ language sql;
+-- create function test.multi_column_table_return () returns table (a text, b text) AS $$
+--   select 'A'::text, 'B'::text;
+-- $$ language sql;
 
-CREATE FUNCTION test.variadic_param(VARIADIC v TEXT[] DEFAULT '{}') RETURNS text[]
-IMMUTABLE
-LANGUAGE SQL AS $$
-  SELECT v
-$$;
+-- CREATE FUNCTION test.variadic_param(VARIADIC v TEXT[] DEFAULT '{}') RETURNS text[]
+-- IMMUTABLE
+-- LANGUAGE SQL AS $$
+--   SELECT v
+-- $$;
 
-CREATE FUNCTION test.sayhello_variadic(name TEXT, VARIADIC v TEXT[]) RETURNS text
-IMMUTABLE
-LANGUAGE SQL AS $$
-  SELECT 'Hello, ' || name
-$$;
+-- CREATE FUNCTION test.sayhello_variadic(name TEXT, VARIADIC v TEXT[]) RETURNS text
+-- IMMUTABLE
+-- LANGUAGE SQL AS $$
+--   SELECT 'Hello, ' || name
+-- $$;
 
-create or replace function test.raise_pt402() returns void as $$
-begin
-  raise sqlstate 'PT402' using message = 'Payment Required',
-                               detail = 'Quota exceeded',
-                               hint = 'Upgrade your plan';
-end;
-$$ language plpgsql;
+-- create or replace function test.raise_pt402() returns void as $$
+-- begin
+--   raise sqlstate 'PT402' using message = 'Payment Required',
+--                                detail = 'Quota exceeded',
+--                                hint = 'Upgrade your plan';
+-- end;
+-- $$ language plpgsql;
 
-create or replace function test.raise_bad_pt() returns void as $$
-begin
-  raise sqlstate 'PT40A' using message = 'Wrong';
-end;
-$$ language plpgsql;
+-- create or replace function test.raise_bad_pt() returns void as $$
+-- begin
+--   raise sqlstate 'PT40A' using message = 'Wrong';
+-- end;
+-- $$ language plpgsql;
 
-create or replace function test.send_body_status_403() returns json as $$
-begin
-  perform set_config('response.status', '403', true);
-  return json_build_object('message', 'invalid user or password');
-end;
-$$ language plpgsql;
+-- create or replace function test.send_body_status_403() returns json as $$
+-- begin
+--   perform set_config('response.status', '403', true);
+--   return json_build_object('message', 'invalid user or password');
+-- end;
+-- $$ language plpgsql;
 
-create or replace function test.send_bad_status() returns json as $$
-begin
-  perform set_config('response.status', 'bad', true);
-  return null;
-end;
-$$ language plpgsql;
+-- create or replace function test.send_bad_status() returns json as $$
+-- begin
+--   perform set_config('response.status', 'bad', true);
+--   return null;
+-- end;
+-- $$ language plpgsql;
 
-create or replace function test.get_projects_and_guc_headers() returns setof test.projects as $$
-  set local "response.headers" = '[{"X-Test": "key1=val1; someValue; key2=val2"}, {"X-Test-2": "key1=val1"}]';
-  select * from test.projects;
-$$ language sql;
+-- create or replace function test.get_projects_and_guc_headers() returns setof test.projects as $$
+--   set local "response.headers" = '[{"X-Test": "key1=val1; someValue; key2=val2"}, {"X-Test-2": "key1=val1"}]';
+--   select * from test.projects;
+-- $$ language sql;
 
-create or replace function test.get_int_and_guc_headers(num int) returns integer as $$
-  set local "response.headers" = '[{"X-Test":"key1=val1; someValue; key2=val2"},{"X-Test-2":"key1=val1"}]';
-  select num;
-$$ language sql;
+-- create or replace function test.get_int_and_guc_headers(num int) returns integer as $$
+--   set local "response.headers" = '[{"X-Test":"key1=val1; someValue; key2=val2"},{"X-Test-2":"key1=val1"}]';
+--   select num;
+-- $$ language sql;
 
-create or replace function test.bad_guc_headers_1() returns void as $$
-  set local "response.headers" = '{"X-Test": "invalid structure for headers"}';
-$$ language sql;
+-- create or replace function test.bad_guc_headers_1() returns void as $$
+--   set local "response.headers" = '{"X-Test": "invalid structure for headers"}';
+-- $$ language sql;
 
-create or replace function test.bad_guc_headers_2() returns void as $$
-  set local "response.headers" = '["invalid", "structure", "for", "headers"]';
-$$ language sql;
+-- create or replace function test.bad_guc_headers_2() returns void as $$
+--   set local "response.headers" = '["invalid", "structure", "for", "headers"]';
+-- $$ language sql;
 
-create or replace function test.bad_guc_headers_3() returns void as $$
-  set local "response.headers" = '{"X-Test": "invalid", "X-Test-2": "structure", "X-Test-3": "for headers"}';
-$$ language sql;
+-- create or replace function test.bad_guc_headers_3() returns void as $$
+--   set local "response.headers" = '{"X-Test": "invalid", "X-Test-2": "structure", "X-Test-3": "for headers"}';
+-- $$ language sql;
 
-create or replace function test.set_cookie_twice() returns void as $$
-  set local "response.headers" = '[{"Set-Cookie": "sessionid=38afes7a8; HttpOnly; Path=/"}, {"Set-Cookie": "id=a3fWa; Expires=Wed, 21 Oct 2015 07:28:00 GMT; Secure; HttpOnly"}]';
-$$ language sql;
+-- create or replace function test.set_cookie_twice() returns void as $$
+--   set local "response.headers" = '[{"Set-Cookie": "sessionid=38afes7a8; HttpOnly; Path=/"}, {"Set-Cookie": "id=a3fWa; Expires=Wed, 21 Oct 2015 07:28:00 GMT; Secure; HttpOnly"}]';
+-- $$ language sql;
 
-create or replace function test.three_defaults(a int default 1, b int default 2, c int default 3) returns int as $$
-select a + b + c
-$$ language sql;
+-- create or replace function test.three_defaults(a int default 1, b int default 2, c int default 3) returns int as $$
+-- select a + b + c
+-- $$ language sql;
 
-create or replace function test.overloaded() returns setof int as $$
-  values (1), (2), (3);
-$$ language sql;
+-- create or replace function test.overloaded() returns setof int as $$
+--   values (1), (2), (3);
+-- $$ language sql;
 
-create or replace function test.overloaded(json) returns table(x int, y text) as $$
-  select * from json_to_recordset($1) as r(x int, y text);
-$$ language sql;
+-- create or replace function test.overloaded(json) returns table(x int, y text) as $$
+--   select * from json_to_recordset($1) as r(x int, y text);
+-- $$ language sql;
 
-create or replace function test.overloaded(a int, b int) returns int as $$
-  select a + b
-$$ language sql;
+-- create or replace function test.overloaded(a int, b int) returns int as $$
+--   select a + b
+-- $$ language sql;
 
-create or replace function test.overloaded(a text, b text, c text) returns text as $$
-  select a || b || c
-$$ language sql;
+-- create or replace function test.overloaded(a text, b text, c text) returns text as $$
+--   select a || b || c
+-- $$ language sql;
 
-create or replace function test.overloaded_html_form() returns setof int as $$
-values (1), (2), (3);
-$$ language sql;
+-- create or replace function test.overloaded_html_form() returns setof int as $$
+-- values (1), (2), (3);
+-- $$ language sql;
 
-create or replace function test.overloaded_html_form(single_param json) returns json as $$
-select single_param;
-$$ language sql;
+-- create or replace function test.overloaded_html_form(single_param json) returns json as $$
+-- select single_param;
+-- $$ language sql;
 
-create or replace function test.overloaded_html_form(a int, b int) returns int as $$
-select a + b
-$$ language sql;
+-- create or replace function test.overloaded_html_form(a int, b int) returns int as $$
+-- select a + b
+-- $$ language sql;
 
-create or replace function test.overloaded_html_form(a text, b text, c text) returns text as $$
-select a || b || c
-$$ language sql;
+-- create or replace function test.overloaded_html_form(a text, b text, c text) returns text as $$
+-- select a || b || c
+-- $$ language sql;
 
-create or replace function test.overloaded_same_args(arg integer) returns json as $$
-select json_build_object(
-    'type', pg_typeof(arg),
-    'value', arg
-  );
-$$ language sql;
+-- create or replace function test.overloaded_same_args(arg integer) returns json as $$
+-- select json_build_object(
+--     'type', pg_typeof(arg),
+--     'value', arg
+--   );
+-- $$ language sql;
 
-create or replace function test.overloaded_same_args(arg xml) returns json as $$
-select json_build_object(
-    'type', pg_typeof(arg),
-    'value', arg
-  );
-$$ language sql;
+-- create or replace function test.overloaded_same_args(arg xml) returns json as $$
+-- select json_build_object(
+--     'type', pg_typeof(arg),
+--     'value', arg
+--   );
+-- $$ language sql;
 
-create or replace function test.overloaded_same_args(arg text, num integer default 0) returns json as $$
-select json_build_object(
-    'type', pg_typeof(arg),
-    'value', arg
-  );
-$$ language sql;
+-- create or replace function test.overloaded_same_args(arg text, num integer default 0) returns json as $$
+-- select json_build_object(
+--     'type', pg_typeof(arg),
+--     'value', arg
+--   );
+-- $$ language sql;
 
 create table test.leak(
   id serial primary key,
   blob bytea
 );
 
-create function test.leak(blob bytea) returns void as $$ begin end; $$ language plpgsql;
+-- create function test.leak(blob bytea) returns void as $$ begin end; $$ language plpgsql;
 
 create table test.perf_articles(
   id integer not null,
@@ -1349,7 +1348,7 @@ create table test.perf_articles(
 create table test.employees(
   first_name text,
   last_name text,
-  salary money,
+  -- salary money,
   company text,
   occupation text,
   primary key(first_name, last_name)
@@ -1391,7 +1390,7 @@ create table test.organizations (
   auditor integer references organizations(id),
   manager_id integer references managers(id)
 );
-alter table only test.organizations rename constraint organizations_manager_id_fkey to manager;
+alter table only test.organizations rename constraint fk_manager_id_ref_managers to manager;
 
 create table private.authors(
   id integer primary key,
@@ -1445,20 +1444,20 @@ create table zone(
   space_id integer references space(id));
 
 -- foreign table tests
-create extension file_fdw;
+-- create extension file_fdw;
 
-create server import_csv foreign data wrapper file_fdw;
+-- create server import_csv foreign data wrapper file_fdw;
 
-create foreign table projects_dump (
-  id integer,
-  name text,
-  client_id integer
-) server import_csv options ( filename '/tmp/projects_dump.csv', format 'csv');
+-- create foreign table projects_dump (
+--   id integer,
+--   name text,
+--   client_id integer
+-- ) server import_csv options ( filename '/tmp/projects_dump.csv', format 'csv');
 
-comment on foreign table projects_dump is
-$$A temporary projects dump
+-- comment on foreign table projects_dump is
+-- $$A temporary projects dump
 
-Just a test for foreign tables$$;
+-- Just a test for foreign tables$$;
 
 create table "UnitTest"(
   "idUnitTest" integer primary key,
@@ -1606,10 +1605,10 @@ CREATE VIEW test.bars as select id, "fooId", name from bar;
 create materialized view materialized_projects as
 select id, name, client_id from projects;
 
-comment on materialized view materialized_projects is
-$$A materialized view for projects
+-- comment on materialized view materialized_projects is
+-- $$A materialized view for projects
 
-Just a test for materialized views$$;
+-- Just a test for materialized views$$;
 
 -- Tests for updatable, insertable and deletable views
 create view test.projects_auto_updatable_view_with_pk as
@@ -1621,67 +1620,67 @@ select name, client_id from test.projects;
 create view test.projects_view_without_triggers as
 select distinct id, name, client_id from test.projects;
 
-create or replace function test.test_for_views_with_triggers() returns trigger as $$
-begin
-    return null;
-end;
-$$ language plpgsql;
+-- create or replace function test.test_for_views_with_triggers() returns trigger as $$
+-- begin
+--     return null;
+-- end;
+-- $$ language plpgsql;
 
 create view test.projects_view_with_all_triggers_with_pk as
 select distinct id, name, client_id from test.projects;
 
-create trigger projects_view_with_all_triggers_with_pk_insert
-    instead of insert on test.projects_view_with_all_triggers_with_pk
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_all_triggers_with_pk_insert
+--     instead of insert on test.projects_view_with_all_triggers_with_pk
+--     for each row execute procedure test_for_views_with_triggers();
 
-create trigger projects_view_with_all_triggers_with_pk_update
-    instead of update on test.projects_view_with_all_triggers_with_pk
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_all_triggers_with_pk_update
+--     instead of update on test.projects_view_with_all_triggers_with_pk
+--     for each row execute procedure test_for_views_with_triggers();
 
-create trigger projects_view_with_all_triggers_with_pk_delete
-    instead of delete on test.projects_view_with_all_triggers_with_pk
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_all_triggers_with_pk_delete
+--     instead of delete on test.projects_view_with_all_triggers_with_pk
+--     for each row execute procedure test_for_views_with_triggers();
 
-create view test.projects_view_with_all_triggers_without_pk as
-select distinct name, client_id from test.projects;
+-- create view test.projects_view_with_all_triggers_without_pk as
+-- select distinct name, client_id from test.projects;
 
-create trigger projects_view_with_all_triggers_without_pk_insert
-    instead of insert on test.projects_view_with_all_triggers_without_pk
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_all_triggers_without_pk_insert
+--     instead of insert on test.projects_view_with_all_triggers_without_pk
+--     for each row execute procedure test_for_views_with_triggers();
 
-create trigger projects_view_with_all_triggers_without_pk_update
-    instead of update on test.projects_view_with_all_triggers_without_pk
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_all_triggers_without_pk_update
+--     instead of update on test.projects_view_with_all_triggers_without_pk
+--     for each row execute procedure test_for_views_with_triggers();
 
-create trigger projects_view_with_all_triggers_without_pk_delete
-    instead of delete on test.projects_view_with_all_triggers_without_pk
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_all_triggers_without_pk_delete
+--     instead of delete on test.projects_view_with_all_triggers_without_pk
+--     for each row execute procedure test_for_views_with_triggers();
 
 create view test.projects_view_with_insert_trigger as
 select distinct id, name, client_id from test.projects;
 
-create trigger projects_view_with_insert_trigger_insert
-    instead of insert on test.projects_view_with_insert_trigger
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_insert_trigger_insert
+--     instead of insert on test.projects_view_with_insert_trigger
+--     for each row execute procedure test_for_views_with_triggers();
 
 create view test.projects_view_with_update_trigger as
 select distinct id, name, client_id from test.projects;
 
-create trigger projects_view_with_update_trigger_update
-    instead of update on test.projects_view_with_update_trigger
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_update_trigger_update
+--     instead of update on test.projects_view_with_update_trigger
+--     for each row execute procedure test_for_views_with_triggers();
 
 create view test.projects_view_with_delete_trigger as
 select distinct id, name, client_id from test.projects;
 
-create trigger projects_view_with_delete_trigger_delete
-    instead of delete on test.projects_view_with_delete_trigger
-    for each row execute procedure test_for_views_with_triggers();
+-- create trigger projects_view_with_delete_trigger_delete
+--     instead of delete on test.projects_view_with_delete_trigger
+--     for each row execute procedure test_for_views_with_triggers();
 
-create or replace function test."quotedFunction"("user" text, "fullName" text, "SSN" text)
-returns jsonb AS $$
-  select format('{"user": "%s", "fullName": "%s", "SSN": "%s"}', "user", "fullName", "SSN")::jsonb;
-$$ language sql;
+-- create or replace function test."quotedFunction"("user" text, "fullName" text, "SSN" text)
+-- returns jsonb AS $$
+--   select format('{"user": "%s", "fullName": "%s", "SSN": "%s"}', "user", "fullName", "SSN")::jsonb;
+-- $$ language sql;
 
 create table private.player (
   id integer not null,
@@ -1693,7 +1692,7 @@ create table private.player (
 
 create table test.contract (
   tournament text not null,
-  time tsrange not null,
+  -- time tsrange not null,
   purchase_price int not null,
   id integer not null,
   first_name text not null,
@@ -1702,36 +1701,36 @@ create table test.contract (
   foreign key (last_name, id, first_name, birth_date) references private.player
 );
 
-create view test.player_view as select * from private.player;
+-- create view test.player_view as select * from private.player;
 
-create view test.contract_view as select * from test.contract;
+-- create view test.contract_view as select * from test.contract;
 
 create type public.my_type AS enum ('something');
 
-create function test.test_arg(my_arg public.my_type) returns text as $$
-  select 'foobar'::text;
-$$ language sql;
+-- create function test.test_arg(my_arg public.my_type) returns text as $$
+--   select 'foobar'::text;
+-- $$ language sql;
 
-create extension if not exists ltree with schema public;
+-- create extension if not exists ltree with schema public;
 
-create table test.ltree_sample (
-  path public.ltree
-);
+-- create table test.ltree_sample (
+--   path public.ltree
+-- );
 
-CREATE FUNCTION test.number_of_labels(test.ltree_sample) RETURNS integer AS $$
-  SELECT nlevel($1.path)
-$$ language sql;
+-- CREATE FUNCTION test.number_of_labels(test.ltree_sample) RETURNS integer AS $$
+--   SELECT nlevel($1.path)
+-- $$ language sql;
 
-create extension if not exists isn with schema extensions;
+-- create extension if not exists isn with schema extensions;
 
-create table test.isn_sample (
-  id extensions.isbn,
-  name text
-);
+-- create table test.isn_sample (
+--   id extensions.isbn,
+--   name text
+-- );
 
-create function test.is_valid_isbn(input text) returns boolean as $$
-  select is_valid(input::isbn);
-$$ language sql;
+-- create function test.is_valid_isbn(input text) returns boolean as $$
+--   select is_valid(input::isbn);
+-- $$ language sql;
 
 create table "Server Today"(
   "cHostname" text,
@@ -1768,62 +1767,62 @@ CREATE TABLE test.openapi_defaults(
   "time" time default '13:00:00'::time without time zone
 );
 
-create function add_them(a integer, b integer)
-returns integer as $$
-  select a + b;
-$$ language sql;
+-- create function add_them(a integer, b integer)
+-- returns integer as $$
+--   select a + b;
+-- $$ language sql;
 
-create or replace function root() returns json as $_$
-declare
-openapi json = $$
-  {
-    "swagger": "2.0",
-    "info":{
-      "title":"PostgREST API",
-      "description":"This is a dynamic API generated by PostgREST"
-    }
-  }
-$$;
-begin
-case current_setting('request.header.accept', true)
-  when 'application/openapi+json' then
-    return openapi;
-  when 'application/json' then
-    return (current_setting('request.spec', true)::json)->'dbRelationships'->0->'relTable';
-  else
-    return openapi;
-  end case;
-end
-$_$ language plpgsql;
+-- create or replace function root() returns json as $_$
+-- declare
+-- openapi json = $$
+--   {
+--     "swagger": "2.0",
+--     "info":{
+--       "title":"PostgREST API",
+--       "description":"This is a dynamic API generated by PostgREST"
+--     }
+--   }
+-- $$;
+-- begin
+-- case current_setting('request.header.accept', true)
+--   when 'application/openapi+json' then
+--     return openapi;
+--   when 'application/json' then
+--     return (current_setting('request.spec', true)::json)->'dbRelationships'->0->'relTable';
+--   else
+--     return openapi;
+--   end case;
+-- end
+-- $_$ language plpgsql;
 
-create or replace function welcome() returns text as $$
-select 'Welcome to PostgREST'::text;
-$$ language sql;
+-- create or replace function welcome() returns text as $$
+-- select 'Welcome to PostgREST'::text;
+-- $$ language sql;
 
-create or replace function welcome_twice() returns setof text as $$
-select 'Welcome to PostgREST'
-union all
-select 'Welcome to PostgREST';
-$$ language sql;
+-- create or replace function welcome_twice() returns setof text as $$
+-- select 'Welcome to PostgREST'
+-- union all
+-- select 'Welcome to PostgREST';
+-- $$ language sql;
 
-create or replace function "welcome.html"() returns text as $_$
-select $$
-<html>
-  <head>
-    <title>PostgREST</title>
-  </head>
-  <body>
-    <h1>Welcome to PostgREST</h1>
-  </body>
-</html>
-$$::text;
-$_$ language sql;
+-- create or replace function "welcome.html"() returns text as $_$
+-- select $$
+-- <html>
+--   <head>
+--     <title>PostgREST</title>
+--   </head>
+--   <body>
+--     <h1>Welcome to PostgREST</h1>
+--   </body>
+-- </html>
+-- $$::text;
+-- $_$ language sql;
 
-create view getallprojects_view as
-select * from getallprojects();
+-- create view getallprojects_view as
+-- select * from getallprojects();
 
-create view get_projects_above_view as
-select * from get_projects_above(1);
+-- create view get_projects_above_view as
+-- select * from get_projects_above(1);
 
 CREATE TABLE web_content (
   id integer,
@@ -1832,9 +1831,9 @@ CREATE TABLE web_content (
   primary key (id)
 );
 
-CREATE FUNCTION getallusers() RETURNS SETOF users AS $$
-  SELECT * FROM test.users;
-$$ LANGUAGE sql STABLE;
+-- CREATE FUNCTION getallusers() RETURNS SETOF users AS $$
+--   SELECT * FROM test.users;
+-- $$ LANGUAGE sql STABLE;
 
 create table app_users (
   id       integer    primary key,
@@ -1852,9 +1851,9 @@ create table private.referrals (
 , link int references private.pages(link) not null
 );
 
-create view test.pages as select * from private.pages;
+-- create view test.pages as select * from private.pages;
 
-create view test.referrals as select * from private.referrals;
+-- create view test.referrals as select * from private.referrals;
 
 create table big_projects (
   big_project_id  serial  primary key,
@@ -1866,7 +1865,7 @@ create table sites (
 , name text
 , main_project_id int     null references big_projects (big_project_id)
 );
-alter table sites rename constraint sites_main_project_id_fkey to main_project;
+alter table sites rename constraint fk_main_project_id_ref_big_projects to main_project;
 
 create table jobs (
   job_id          uuid    primary key
@@ -1875,14 +1874,14 @@ create table jobs (
 , big_project_id  int     not null references big_projects (big_project_id)
 );
 
-create view main_jobs as
-select * from jobs
-where site_id in (select site_id from sites where main_project_id is not null);
+-- create view main_jobs as
+-- select * from jobs
+-- where site_id in (select site_id from sites where main_project_id is not null);
 
 -- junction in a private schema, just to make sure we don't leak it on resource embedding
 -- if it leaks it would show on the disambiguation error tests
-create view private.priv_jobs as
-  select * from jobs;
+-- create view private.priv_jobs as
+--   select * from jobs;
 
 -- tables to show our limitation when trying to do an m2m embed
 -- with a junction table that has more than two foreign keys
@@ -1956,60 +1955,60 @@ add constraint snd_shift foreign key           (snd_shift_activity_id, snd_shift
                          references activities (id, schedule_id);
 
 -- for a pre-request function
-create or replace function custom_headers() returns void as $$
-declare
-  user_agent text := current_setting('request.header.user-agent', true);
-  req_path   text := current_setting('request.path', true);
-  req_accept text := current_setting('request.header.accept', true);
-  req_method text := current_setting('request.method', true);
-begin
-  if user_agent similar to 'MSIE (6.0|7.0)' then
-    perform set_config('response.headers',
-      '[{"Cache-Control": "no-cache, no-store, must-revalidate"}]', true);
-  elsif req_path similar to '/(items|projects)' and req_accept = 'text/csv' then
-    perform set_config('response.headers',
-      format('[{"Content-Disposition": "attachment; filename=%s.csv"}]', trim('/' from req_path)), true);
-  elsif req_path similar to '/(clients|rpc/getallprojects)' then
-    perform set_config('response.headers',
-      '[{"Content-Type": "application/custom+json"}]', true);
-  elsif req_path = '/items' and
-        req_method similar to 'POST|PATCH|PUT|DELETE' then
-    perform set_config('response.headers',
-      '[{"X-Custom-Header": "mykey=myval"}]', true);
-  end if;
-end; $$ language plpgsql;
+-- create or replace function custom_headers() returns void as $$
+-- declare
+--   user_agent text := current_setting('request.header.user-agent', true);
+--   req_path   text := current_setting('request.path', true);
+--   req_accept text := current_setting('request.header.accept', true);
+--   req_method text := current_setting('request.method', true);
+-- begin
+--   if user_agent similar to 'MSIE (6.0|7.0)' then
+--     perform set_config('response.headers',
+--       '[{"Cache-Control": "no-cache, no-store, must-revalidate"}]', true);
+--   elsif req_path similar to '/(items|projects)' and req_accept = 'text/csv' then
+--     perform set_config('response.headers',
+--       format('[{"Content-Disposition": "attachment; filename=%s.csv"}]', trim('/' from req_path)), true);
+--   elsif req_path similar to '/(clients|rpc/getallprojects)' then
+--     perform set_config('response.headers',
+--       '[{"Content-Type": "application/custom+json"}]', true);
+--   elsif req_path = '/items' and
+--         req_method similar to 'POST|PATCH|PUT|DELETE' then
+--     perform set_config('response.headers',
+--       '[{"X-Custom-Header": "mykey=myval"}]', true);
+--   end if;
+-- end; $$ language plpgsql;
 
 create table private.stuff(
   id integer primary key
 , name text
 );
 
-create view test.stuff as select * from private.stuff;
+-- create view test.stuff as select * from private.stuff;
 
-create or replace function location_for_stuff() returns trigger as $$
-begin
-    insert into private.stuff values (new.id, new.name);
-    if new.id is not null
-    then
-      perform set_config(
-        'response.headers'
-      , format('[{"Location": "/%s?id=eq.%s&overriden=true"}]', tg_table_name, new.id)
-      , true
-      );
-    end if;
-    return new;
-end
-$$ language plpgsql security definer;
-create trigger location_for_stuff instead of insert on test.stuff for each row execute procedure test.location_for_stuff();
+-- create or replace function location_for_stuff() returns trigger as $$
+-- begin
+--     insert into private.stuff values (new.id, new.name);
+--     if new.id is not null
+--     then
+--       perform set_config(
+--         'response.headers'
+--       , format('[{"Location": "/%s?id=eq.%s&overriden=true"}]', tg_table_name, new.id)
+--       , true
+--       );
+--     end if;
+--     return new;
+-- end
+-- $$ language plpgsql security definer;
+-- create trigger location_for_stuff instead of insert on test.stuff for each row execute procedure test.location_for_stuff();
 
-create or replace function status_205_for_updated_stuff() returns trigger as $$
-begin
-    update private.stuff set id = new.id, name = new.name;
-    perform set_config('response.status' , '205' , true);
-    return new;
-end
-$$ language plpgsql security definer;
-create trigger status_205_for_updated_stuff instead of update on test.stuff for each row execute procedure test.status_205_for_updated_stuff();
+-- create or replace function status_205_for_updated_stuff() returns trigger as $$
+-- begin
+--     update private.stuff set id = new.id, name = new.name;
+--     perform set_config('response.status' , '205' , true);
+--     return new;
+-- end
+-- $$ language plpgsql security definer;
+-- create trigger status_205_for_updated_stuff instead of update on test.stuff for each row execute procedure test.status_205_for_updated_stuff();
 
 create table loc_test (
   id int primary key
@@ -2030,10 +2029,10 @@ create table v1.children (
   references v1.parents(id)
 );
 
-create function v1.get_parents_below(id int)
-returns setof v1.parents as $$
-  select * from v1.parents where id < $1;
-$$ language sql;
+-- create function v1.get_parents_below(id int)
+-- returns setof v1.parents as $$
+--   select * from v1.parents where id < $1;
+-- $$ language sql;
 
 create table v2.parents (
   id    int primary key
@@ -2053,63 +2052,63 @@ create table v2.another_table (
 , another_value text
 );
 
-create function v2.get_parents_below(id int)
-returns setof v2.parents as $$
-  select * from v2.parents where id < $1;
-$$ language sql;
+-- create function v2.get_parents_below(id int)
+-- returns setof v2.parents as $$
+--   select * from v2.parents where id < $1;
+-- $$ language sql;
 
--- Used to test if prepared statements are used
-create function uses_prepared_statements() returns bool as $$
-  select count(name) > 0 from pg_catalog.pg_prepared_statements
-$$ language sql;
+-- -- Used to test if prepared statements are used
+-- create function uses_prepared_statements() returns bool as $$
+--   select count(name) > 0 from pg_catalog.pg_prepared_statements
+-- $$ language sql;
 
-create or replace function change_max_rows_config(val int, notify bool default false) returns void as $_$
-begin
-  execute format($$
-    alter role postgrest_test_authenticator set pgrst.db_max_rows = %L;
-  $$, val);
-  if notify then
-    perform pg_notify('pgrst', 'reload config');
-  end if;
-end $_$ volatile security definer language plpgsql ;
+-- create or replace function change_max_rows_config(val int, notify bool default false) returns void as $_$
+-- begin
+--   execute format($$
+--     alter role postgrest_test_authenticator set pgrst.db_max_rows = %L;
+--   $$, val);
+--   if notify then
+--     perform pg_notify('pgrst', 'reload config');
+--   end if;
+-- end $_$ volatile security definer language plpgsql ;
 
-create or replace function reset_max_rows_config() returns void as $_$
-begin
-  alter role postgrest_test_authenticator set pgrst.db_max_rows = '1000';
-end $_$ volatile security definer language plpgsql ;
+-- create or replace function reset_max_rows_config() returns void as $_$
+-- begin
+--   alter role postgrest_test_authenticator set pgrst.db_max_rows = '1000';
+-- end $_$ volatile security definer language plpgsql ;
 
-create or replace function change_db_schema_and_full_reload(schemas text) returns void as $_$
-begin
-  execute format($$
-    alter role postgrest_test_authenticator set pgrst.db_schemas = %L;
-  $$, schemas);
-  perform pg_notify('pgrst', 'reload config');
-  perform pg_notify('pgrst', 'reload schema');
-end $_$ volatile security definer language plpgsql ;
+-- create or replace function change_db_schema_and_full_reload(schemas text) returns void as $_$
+-- begin
+--   execute format($$
+--     alter role postgrest_test_authenticator set pgrst.db_schemas = %L;
+--   $$, schemas);
+--   perform pg_notify('pgrst', 'reload config');
+--   perform pg_notify('pgrst', 'reload schema');
+-- end $_$ volatile security definer language plpgsql ;
 
-create or replace function v1.reset_db_schema_config() returns void as $_$
-begin
-  alter role postgrest_test_authenticator set pgrst.db_schemas = 'test';
-  perform pg_notify('pgrst', 'reload config');
-  perform pg_notify('pgrst', 'reload schema');
-end $_$ volatile security definer language plpgsql ;
+-- create or replace function v1.reset_db_schema_config() returns void as $_$
+-- begin
+--   alter role postgrest_test_authenticator set pgrst.db_schemas = 'test';
+--   perform pg_notify('pgrst', 'reload config');
+--   perform pg_notify('pgrst', 'reload schema');
+-- end $_$ volatile security definer language plpgsql ;
 
-create or replace function test.invalid_role_claim_key_reload() returns void as $_$
-begin
-  alter role postgrest_test_authenticator set pgrst.jwt_role_claim_key = 'test';
-  perform pg_notify('pgrst', 'reload config');
-end $_$ volatile security definer language plpgsql ;
+-- create or replace function test.invalid_role_claim_key_reload() returns void as $_$
+-- begin
+--   alter role postgrest_test_authenticator set pgrst.jwt_role_claim_key = 'test';
+--   perform pg_notify('pgrst', 'reload config');
+-- end $_$ volatile security definer language plpgsql ;
 
-create or replace function test.reset_invalid_role_claim_key() returns void as $_$
-begin
-  alter role postgrest_test_authenticator set pgrst.jwt_role_claim_key = '."a"."role"';
-  perform pg_notify('pgrst', 'reload config');
-end $_$ volatile security definer language plpgsql ;
+-- create or replace function test.reset_invalid_role_claim_key() returns void as $_$
+-- begin
+--   alter role postgrest_test_authenticator set pgrst.jwt_role_claim_key = '."a"."role"';
+--   perform pg_notify('pgrst', 'reload config');
+-- end $_$ volatile security definer language plpgsql ;
 
-create or replace function test.reload_pgrst_config() returns void as $_$
-begin
-  perform pg_notify('pgrst', 'reload config');
-end $_$ language plpgsql ;
+-- create or replace function test.reload_pgrst_config() returns void as $_$
+-- begin
+--   perform pg_notify('pgrst', 'reload config');
+-- end $_$ language plpgsql ;
 
 create table private.screens (
   id serial primary key,
@@ -2127,14 +2126,14 @@ create table private.label_screen (
   constraint label_screen_pkey primary key (label_id, screen_id)
 );
 
-create view test.labels as
-select * from private.labels;
+-- create view test.labels as
+-- select * from private.labels;
 
-create view test.screens as
-select * from private.screens;
+-- create view test.screens as
+-- select * from private.screens;
 
-create view test.label_screen as
-select * from private.label_screen;
+-- create view test.label_screen as
+-- select * from private.label_screen;
 
 create table private.actors (
   id int,
@@ -2153,18 +2152,18 @@ create table private.personnages (
   role_id int not null,
   character text not null,
   constraint personnages_film_id_role_id primary key (film_id, role_id),
-  constraint personnages_film_id_fkey foreign key (film_id) references private.films(id) not deferrable,
-  constraint personnages_role_id_fkey foreign key (role_id) references private.actors(id) not deferrable
+  constraint personnages_film_id_fkey foreign key (film_id) references private.films(id),
+  constraint personnages_role_id_fkey foreign key (role_id) references private.actors(id)
 );
 
-create view test.actors as
-select * from private.actors;
+-- create view test.actors as
+-- select * from private.actors;
 
-create view test.films as
-select * from private.films;
+-- create view test.films as
+-- select * from private.films;
 
-create view test.personnages as
-select * from private.personnages;
+-- create view test.personnages as
+-- select * from private.personnages;
 
 create table test.end_1(
   id int primary key,
@@ -2205,82 +2204,82 @@ create table private.rollen (
 
 -- Tables used for testing embedding between partitioned tables
 
-do $do$begin
-    -- partitioned tables using the PARTITION syntax are supported from pg v10
-    if (select current_setting('server_version_num')::int >= 100000) then
-      create table test.partitioned_a(
-        id int not null,
-        name varchar(64) not null
-      ) partition by list (name);
+-- do $do$begin
+--     -- partitioned tables using the PARTITION syntax are supported from pg v10
+--     if (select current_setting('server_version_num')::int >= 100000) then
+--       create table test.partitioned_a(
+--         id int not null,
+--         name varchar(64) not null
+--       ) partition by list (name);
 
-      comment on table test.partitioned_a is
-      $$A partitioned table
+--       comment on table test.partitioned_a is
+--       $$A partitioned table
 
-A test for partitioned tables$$;
+-- A test for partitioned tables$$;
 
-      create table test.first_partition_a partition of test.partitioned_a
-        for values in ('first');
+--       create table test.first_partition_a partition of test.partitioned_a
+--         for values in ('first');
 
-      create table test.second_partition_a partition of test.partitioned_a
-        for values in ('second');
-    end if;
+--       create table test.second_partition_a partition of test.partitioned_a
+--         for values in ('second');
+--     end if;
 
-    -- primary keys for partitioned tables are supported from pg v11
-    if (select current_setting('server_version_num')::int >= 110000) then
-      create table test.reference_from_partitioned (
-        id int primary key
-      );
+--     -- primary keys for partitioned tables are supported from pg v11
+--     if (select current_setting('server_version_num')::int >= 110000) then
+--       create table test.reference_from_partitioned (
+--         id int primary key
+--       );
 
-      alter table test.partitioned_a add primary key (id, name);
-      alter table test.partitioned_a add column id_ref int references test.reference_from_partitioned(id);
-    end if;
+--       alter table test.partitioned_a add primary key (id, name);
+--       alter table test.partitioned_a add column id_ref int references test.reference_from_partitioned(id);
+--     end if;
 
-    -- foreign keys referencing partitioned tables are supported from pg v12
-    if (select current_setting('server_version_num')::int >= 120000) then
-      create table test.partitioned_b(
-        id int not null,
-        name varchar(64) not null,
-        id_a int,
-        name_a varchar(64),
-        primary key (id, name),
-        foreign key (id_a, name_a) references test.partitioned_a (id, name)
-      ) partition by list (name);
+--     -- foreign keys referencing partitioned tables are supported from pg v12
+--     if (select current_setting('server_version_num')::int >= 120000) then
+--       create table test.partitioned_b(
+--         id int not null,
+--         name varchar(64) not null,
+--         id_a int,
+--         name_a varchar(64),
+--         primary key (id, name),
+--         foreign key (id_a, name_a) references test.partitioned_a (id, name)
+--       ) partition by list (name);
 
-      create table test.first_partition_b partition of test.partitioned_b
-        for values in ('first_b');
+--       create table test.first_partition_b partition of test.partitioned_b
+--         for values in ('first_b');
 
-      create table test.second_partition_b partition of test.partitioned_b
-        for values in ('second_b');
+--       create table test.second_partition_b partition of test.partitioned_b
+--         for values in ('second_b');
 
-      create table test.reference_to_partitioned (
-        id int not null primary key,
-        id_a int,
-        name_a varchar(64),
-        foreign key (id_a, name_a) references test.partitioned_a (id, name)
-      );
-    end if;
-end$do$;
+--       create table test.reference_to_partitioned (
+--         id int not null primary key,
+--         id_a int,
+--         name_a varchar(64),
+--         foreign key (id_a, name_a) references test.partitioned_a (id, name)
+--       );
+--     end if;
+-- end$do$;
 
-create or replace function test.unnamed_json_param(json) returns json as $$
-  select $1;
-$$ language sql;
+-- create or replace function test.unnamed_json_param(json) returns json as $$
+--   select $1;
+-- $$ language sql;
 
-create or replace function test.unnamed_text_param(text) returns text as $$
-  select $1;
-$$ language sql ;
+-- create or replace function test.unnamed_text_param(text) returns text as $$
+--   select $1;
+-- $$ language sql ;
 
-create or replace function test.unnamed_bytea_param(bytea) returns bytea as $$
-  select $1::bytea;
-$$ language sql ;
+-- create or replace function test.unnamed_bytea_param(bytea) returns bytea as $$
+--   select $1::bytea;
+-- $$ language sql ;
 
-create or replace function test.unnamed_int_param(int) returns int as $$
-  select $1;
-$$ language sql;
+-- create or replace function test.unnamed_int_param(int) returns int as $$
+--   select $1;
+-- $$ language sql;
 
-create or replace function test.overloaded_unnamed_param(json) returns int as $$
-  select $1;
-$$ language sql;
+-- create or replace function test.overloaded_unnamed_param(json) returns int as $$
+--   select $1;
+-- $$ language sql;
 
-create or replace function test.overloaded_unnamed_param(x int, y int) returns int as $$
-  select x + y;
-$$ language sql;
+-- create or replace function test.overloaded_unnamed_param(x int, y int) returns int as $$
+--   select x + y;
+-- $$ language sql;

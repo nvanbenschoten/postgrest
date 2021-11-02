@@ -119,7 +119,7 @@ main = do
         analyzeTable testDbConn "child_entities"
 
       specs = uncurry describe <$> [
-          ("Feature.AndOrParamsSpec"         , Feature.AndOrParamsSpec.spec actualPgVersion)
+          ("Feature.AndOrParamsSpec"         , Feature.AndOrParamsSpec.spec)
         , ("Feature.AuthSpec"                , Feature.AuthSpec.spec actualPgVersion)
         , ("Feature.ConcurrentSpec"          , Feature.ConcurrentSpec.spec)
         , ("Feature.CorsSpec"                , Feature.CorsSpec.spec)

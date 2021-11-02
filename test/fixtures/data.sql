@@ -9,7 +9,7 @@ SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
-SET check_function_bodies = false;
+-- SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 SET search_path = postgrest, pg_catalog;
@@ -294,12 +294,12 @@ INSERT INTO nullable_integer VALUES (NULL);
 -- Data for Name: tsearch; Type: TABLE DATA; Schema: test; Owner: -
 --
 
-TRUNCATE TABLE tsearch CASCADE;
-INSERT INTO tsearch VALUES (to_tsvector('It''s kind of fun to do the impossible'));
-INSERT INTO tsearch VALUES (to_tsvector('But also fun to do what is possible'));
-INSERT INTO tsearch VALUES (to_tsvector('Fat cats ate rats'));
-INSERT INTO tsearch VALUES (to_tsvector('french', 'C''est un peu amusant de faire l''impossible'));
-INSERT INTO tsearch VALUES (to_tsvector('german', 'Es ist eine Art Spaß, das Unmögliche zu machen'));
+-- TRUNCATE TABLE tsearch CASCADE;
+-- INSERT INTO tsearch VALUES (to_tsvector('It''s kind of fun to do the impossible'));
+-- INSERT INTO tsearch VALUES (to_tsvector('But also fun to do what is possible'));
+-- INSERT INTO tsearch VALUES (to_tsvector('Fat cats ate rats'));
+-- INSERT INTO tsearch VALUES (to_tsvector('french', 'C''est un peu amusant de faire l''impossible'));
+-- INSERT INTO tsearch VALUES (to_tsvector('german', 'Es ist eine Art Spaß, das Unmögliche zu machen'));
 
 --
 -- Data for Name: users_projects; Type: TABLE DATA; Schema: test; Owner: -
@@ -354,10 +354,10 @@ TRUNCATE TABLE items_with_different_col_types CASCADE;
 INSERT INTO items_with_different_col_types VALUES (1, null, null, null, null, null, null, null);
 
 TRUNCATE TABLE entities CASCADE;
-INSERT INTO entities VALUES (1, 'entity 1', '{1}', '''bar'':2 ''foo'':1');
-INSERT INTO entities VALUES (2, 'entity 2', '{1,2}', '''baz'':1 ''qux'':2');
-INSERT INTO entities VALUES (3, 'entity 3', '{1,2,3}', null);
-INSERT INTO entities VALUES (4, null, null, null);
+INSERT INTO entities VALUES (1, 'entity 1', '{1}');
+INSERT INTO entities VALUES (2, 'entity 2', '{1,2}');
+INSERT INTO entities VALUES (3, 'entity 3', '{1,2,3}');
+INSERT INTO entities VALUES (4, null, null);
 
 TRUNCATE TABLE child_entities CASCADE;
 INSERT INTO child_entities VALUES (1, 'child entity 1', 1);
@@ -374,11 +374,11 @@ INSERT INTO grandchild_entities VALUES (3, 'grandchild entity 3', 2, null, null,
 INSERT INTO grandchild_entities VALUES (4, '(grandchild,entity,4)', 2, null, null, '{"a": {"b":"foo"}}');
 INSERT INTO grandchild_entities VALUES (5, '(grandchild,entity,5)', 2, null, null, '{"b":"bar"}');
 
-TRUNCATE TABLE ranges CASCADE;
-INSERT INTO ranges VALUES (1, '[1,3]');
-INSERT INTO ranges VALUES (2, '[3,6]');
-INSERT INTO ranges VALUES (3, '[6,9]');
-INSERT INTO ranges VALUES (4, '[9,12]');
+-- TRUNCATE TABLE ranges CASCADE;
+-- INSERT INTO ranges VALUES (1, '[1,3]');
+-- INSERT INTO ranges VALUES (2, '[3,6]');
+-- INSERT INTO ranges VALUES (3, '[6,9]');
+-- INSERT INTO ranges VALUES (4, '[9,12]');
 
 TRUNCATE TABLE being CASCADE;
 INSERT INTO being VALUES (1), (2), (3), (4);
@@ -394,9 +394,9 @@ INSERT INTO being_part VALUES (1,1), (2,1), (3,2), (4,3);
 
 TRUNCATE TABLE employees CASCADE;
 INSERT INTO employees VALUES
-  ('Frances M.', 'Roe', '24000', 'One-Up Realty', 'Author'),
-  ('Daniel B.', 'Lyon', '36000', 'Dubrow''s Cafeteria', 'Packer'),
-  ('Edwin S.', 'Smith', '48000', 'Pro Garden Management', 'Marine biologist');
+  ('Frances M.', 'Roe', 'One-Up Realty', 'Author'),
+  ('Daniel B.', 'Lyon', 'Dubrow''s Cafeteria', 'Packer'),
+  ('Edwin S.', 'Smith', 'Pro Garden Management', 'Marine biologist');
 
 TRUNCATE TABLE tiobe_pls CASCADE;
 INSERT INTO tiobe_pls VALUES ('Java', 1), ('C', 2), ('Python', 4);
@@ -494,7 +494,7 @@ INSERT INTO zone VALUES (3, 'store 3', 3, 1);
 INSERT INTO zone VALUES (4, 'store 4', 3, 1);
 
 -- for foreign table projects_dump
-copy (select id, name, client_id from projects) to '/tmp/projects_dump.csv' with csv;
+-- copy (select id, name, client_id from projects) to '/tmp/projects_dump.csv' with csv;
 
 TRUNCATE TABLE "UnitTest" CASCADE;
 INSERT INTO "UnitTest" VALUES (1, 'unit test 1');
@@ -529,7 +529,7 @@ TRUNCATE TABLE contract CASCADE;
 insert into contract
 select
   'tournament_' || generate_series,
-  tsrange(now()::timestamp, null),
+  -- tsrange(now()::timestamp, null),
   10*generate_series,
   generate_series,
   'first_name_' || generate_series,
@@ -537,15 +537,15 @@ select
   '2018-10-11'
 from generate_series(1, 6);
 
-TRUNCATE TABLE ltree_sample CASCADE;
-INSERT INTO ltree_sample VALUES ('Top');
-INSERT INTO ltree_sample VALUES ('Top.Science');
-INSERT INTO ltree_sample VALUES ('Top.Science.Astronomy');
-INSERT INTO ltree_sample VALUES ('Top.Science.Astronomy.Astrophysics');
-INSERT INTO ltree_sample VALUES ('Top.Science.Astronomy.Cosmology');
+-- TRUNCATE TABLE ltree_sample CASCADE;
+-- INSERT INTO ltree_sample VALUES ('Top');
+-- INSERT INTO ltree_sample VALUES ('Top.Science');
+-- INSERT INTO ltree_sample VALUES ('Top.Science.Astronomy');
+-- INSERT INTO ltree_sample VALUES ('Top.Science.Astronomy.Astrophysics');
+-- INSERT INTO ltree_sample VALUES ('Top.Science.Astronomy.Cosmology');
 
-TRUNCATE TABLE isn_sample CASCADE;
-INSERT INTO isn_sample VALUES ('978-0-393-04002-9', 'Mathematics: From the Birth of Numbers');
+-- TRUNCATE TABLE isn_sample CASCADE;
+-- INSERT INTO isn_sample VALUES ('978-0-393-04002-9', 'Mathematics: From the Birth of Numbers');
 
 TRUNCATE TABLE "Server Today" CASCADE;
 COPY "Server Today" ("cHostname", "Just A Server Model") FROM STDIN CSV DELIMITER '|';
@@ -558,9 +558,9 @@ hbnim1     | IBM,9133-55A (P5-55A)
 
 TRUNCATE TABLE pgrst_reserved_chars CASCADE;
 COPY pgrst_reserved_chars ("*id*", ":arr->ow::cast", "(inside,parens)", "a.dotted.column", "  col  w  space  ") FROM STDIN CSV DELIMITER '|';
-1 | arrow-1 | parens-1 | dotted-1 | space-1
-2 | arrow-2 | parens-2 | dotted-2 | space-2
-3 | arrow-3 | parens-3 | dotted-3 | space-3
+1| arrow-1 | parens-1 | dotted-1 | space-1
+2| arrow-2 | parens-2 | dotted-2 | space-2
+3| arrow-3 | parens-3 | dotted-3 | space-3
 \.
 
 TRUNCATE TABLE web_content CASCADE;
@@ -654,10 +654,10 @@ INSERT INTO private.screens(name) VALUES ('banana'), ('helicopter'), ('formula 1
 INSERT INTO private.labels(name) VALUES ('vehicles'), ('fruit');
 
 INSERT INTO private.label_screen(label_id, screen_id) VALUES
-    ((SELECT id FROM labels WHERE name='vehicles'), (SELECT id FROM screens WHERE name='helicopter')),
-    ((SELECT id FROM labels WHERE name='vehicles'), (SELECT id FROM screens WHERE name='formula 1 banana')),
-    ((SELECT id FROM labels WHERE name='fruit'), (SELECT id FROM screens WHERE name='banana')),
-    ((SELECT id FROM labels WHERE name='fruit'), (SELECT id FROM screens WHERE name='formula 1 banana'));
+    ((SELECT id FROM private.labels WHERE name='vehicles'), (SELECT id FROM private.screens WHERE name='helicopter')),
+    ((SELECT id FROM private.labels WHERE name='vehicles'), (SELECT id FROM private.screens WHERE name='formula 1 banana')),
+    ((SELECT id FROM private.labels WHERE name='fruit'), (SELECT id FROM private.screens WHERE name='banana')),
+    ((SELECT id FROM private.labels WHERE name='fruit'), (SELECT id FROM private.screens WHERE name='formula 1 banana'));
 
 TRUNCATE TABLE private.actors CASCADE;
 INSERT INTO private.actors (id, name) VALUES (1,'john'), (2,'mary');
@@ -668,27 +668,27 @@ INSERT INTO private.films (id, title) VALUES (12,'douze commandements'), (2001,'
 TRUNCATE TABLE private.personnages CASCADE;
 INSERT INTO private.personnages (film_id, role_id, character) VALUES (12,1,'méchant'), (2001,2,'astronaute');
 
-DO $do$BEGIN
-  IF (SELECT current_setting('server_version_num')::INT >= 100000) THEN
-    INSERT INTO test.partitioned_a(id, name) VALUES (1,'first');
-    INSERT INTO test.partitioned_a(id, name) VALUES (2,'first');
-    INSERT INTO test.partitioned_a(id, name) VALUES (3,'second');
-    INSERT INTO test.partitioned_a(id, name) VALUES (4,'second');
-  END IF;
+-- DO $do$BEGIN
+--   IF (SELECT current_setting('server_version_num')::INT >= 100000) THEN
+--     INSERT INTO test.partitioned_a(id, name) VALUES (1,'first');
+--     INSERT INTO test.partitioned_a(id, name) VALUES (2,'first');
+--     INSERT INTO test.partitioned_a(id, name) VALUES (3,'second');
+--     INSERT INTO test.partitioned_a(id, name) VALUES (4,'second');
+--   END IF;
 
-  IF (SELECT current_setting('server_version_num')::INT >= 110000) THEN
-    INSERT INTO test.reference_from_partitioned(id) VALUES (1),(2);
+--   IF (SELECT current_setting('server_version_num')::INT >= 110000) THEN
+--     INSERT INTO test.reference_from_partitioned(id) VALUES (1),(2);
 
-    UPDATE test.partitioned_a SET id_ref = 1 WHERE id = 1;
-  END IF;
+--     UPDATE test.partitioned_a SET id_ref = 1 WHERE id = 1;
+--   END IF;
 
-  IF (SELECT current_setting('server_version_num')::INT >= 120000) THEN
-    INSERT INTO test.partitioned_b(id, name) VALUES (1,'first_b');
-    INSERT INTO test.partitioned_b(id, name, id_a, name_a) VALUES (2,'first_b', 2, 'first');
-    INSERT INTO test.partitioned_b(id, name) VALUES (3,'second_b');
-    INSERT INTO test.partitioned_b(id, name, id_a, name_a) VALUES (4,'second_b', 4, 'second');
+--   IF (SELECT current_setting('server_version_num')::INT >= 120000) THEN
+--     INSERT INTO test.partitioned_b(id, name) VALUES (1,'first_b');
+--     INSERT INTO test.partitioned_b(id, name, id_a, name_a) VALUES (2,'first_b', 2, 'first');
+--     INSERT INTO test.partitioned_b(id, name) VALUES (3,'second_b');
+--     INSERT INTO test.partitioned_b(id, name, id_a, name_a) VALUES (4,'second_b', 4, 'second');
 
-    INSERT INTO test.reference_to_partitioned(id) VALUES (1);
-    INSERT INTO test.reference_to_partitioned(id, id_a, name_a) VALUES (2, 2, 'first');
-  END IF;
-END$do$;
+--     INSERT INTO test.reference_to_partitioned(id) VALUES (1);
+--     INSERT INTO test.reference_to_partitioned(id, id_a, name_a) VALUES (2, 2, 'first');
+--   END IF;
+-- END$do$;
